@@ -481,6 +481,13 @@ class Trainer:
                 }
                 wandb.log(rollout_val_loss_dict, step=epoch)
 
+        logger.info(f"Attempting to load best model from {os.path.join(self.checkpoint_folder, 'best.pt')}")
+        try:
+            self.load_checkpoint(os.path.join(self.checkpoint_folder, "best.pt"))
+            logger.info("Best model loaded successfully!")
+        except FileNotFoundError:
+            logger.info("Best checkpoint not found, using final model instead")
+
         test_loss, test_logs = self.validation_loop(
             test_dataloader,
             valid_or_test="test",
